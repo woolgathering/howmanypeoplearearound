@@ -13,6 +13,20 @@ from howmanypeoplearearound.oui import oui
 from howmanypeoplearearound.analysis import analyze_file
 from howmanypeoplearearound.colors import *
 
+# Import OSC #########
+from pythonosc import osc_message_builder
+from pythonosc import udp_client
+
+# Setup OSC ##########
+parser = argparse.ArgumentParser()
+parser.add_argument("--ip", default="127.0.0.1", # <--------- edit IP here
+    help="The ip of the OSC server")
+parser.add_argument("--port", type=int, default=5005, # <------------ edit port here
+    help="The port the OSC server is listening on")
+args = parser.parse_args()
+client = udp_client.SimpleUDPClient(args.ip, args.port)
+######################
+
 if os.name != 'nt':
     from pick import pick
 
@@ -55,6 +69,9 @@ def fileToMacSet(path):
     with open(path, 'r') as f:
         maclist = f.readlines()
     return set([x.strip() for x in maclist])
+
+def sendOSC(message):
+
 
 @click.command()
 @click.option('-a', '--adapter', default='', help='adapter to use')
@@ -224,7 +241,7 @@ def scan(adapter, scantime, verbose, number, nearby, jsonprint, out, allmacaddre
         print(json.dumps(cellphone_people, indent=2))
 
     # US / Canada: https://twitter.com/conradhackett/status/701798230619590656
-    percentage_of_people_with_phones = 0.7
+    percentage_of_people_with_phones = 0.7 # <------------------- very interesting....
     if nocorrection:
         percentage_of_people_with_phones = 1
     num_people = int(round(len(cellphone_people) /
@@ -241,6 +258,10 @@ def scan(adapter, scantime, verbose, number, nearby, jsonprint, out, allmacaddre
             print("No one around, but you.")
         else:
             print("There are about %d people around." % num_people)
+
+    # Send OSC message to the client ###3#####
+    client.send_message("/numPeople", num_people)
+    ##########################################
 
     if out:
         with open(out, 'a') as f:
