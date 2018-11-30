@@ -15,6 +15,7 @@ setup(
         "click",
         "netifaces",
         "pick",
+        "python-osc"
     ],
     setup_requires=[],
     tests_require=[],

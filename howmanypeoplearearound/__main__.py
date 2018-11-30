@@ -18,13 +18,15 @@ from pythonosc import osc_message_builder
 from pythonosc import udp_client
 
 # Setup OSC ##########
-parser = argparse.ArgumentParser()
-parser.add_argument("--ip", default="127.0.0.1", # <--------- edit IP here
-    help="The ip of the OSC server")
-parser.add_argument("--port", type=int, default=5005, # <------------ edit port here
-    help="The port the OSC server is listening on")
-args = parser.parse_args()
-client = udp_client.SimpleUDPClient(args.ip, args.port)
+#parser = argparse.ArgumentParser()
+#parser.add_argument("--ip", default="127.0.0.1", # <--------- edit IP here
+ #   help="The ip of the OSC server")
+#parser.add_argument("--port", type=int, default=5005, # <------------ edit port here
+ #   help="The port the OSC server is listening on")
+osc_ip = "172.16.42.239"
+osc_port = 57120
+# args = parser.parse_args()
+client = udp_client.SimpleUDPClient(osc_ip, osc_port)
 ######################
 
 if os.name != 'nt':
@@ -69,8 +71,6 @@ def fileToMacSet(path):
     with open(path, 'r') as f:
         maclist = f.readlines()
     return set([x.strip() for x in maclist])
-
-def sendOSC(message):
 
 
 @click.command()
