@@ -66,12 +66,10 @@ def analyze_file(fname, port):
         <!-- Plotly.js -->
         <script type="text/javascript" src="https://cdn.plot.ly/plotly-1.27.0.min.js"></script>
     </head>
-
     <body>
         <div id="myDiv2" style="width: 950px; height: 350px;">
             <!-- Plotly chart will be drawn inside this DIV -->
         </div>
-
         <div id="myDiv" style="width: 950px; height: 350px;">
             <!-- Plotly chart will be drawn inside this DIV -->
         </div>
@@ -131,3 +129,23 @@ var layout2 = {
         import SocketServer
         httpd = SocketServer.TCPServer(("", port), SimpleHTTPServer.SimpleHTTPRequestHandler)
         httpd.serve_forever()
+
+
+
+
+def parse_file(fname, output):
+  output_file = open(str(output), "w")
+  inc = 0;
+
+  with open(fname, 'r') as f:
+    for line in f:
+      line = json.loads(line)
+      line_to_write = ""
+      line_to_write += str(inc) # write x values for gnuplot
+      line_to_write += ", "
+      line_to_write += str(len(line['cellphones'])) # number of phones
+      line_to_write += ", "
+      line_to_write += str(datetime.datetime.fromtimestamp(
+         line['time']).isoformat().split('.')[0].replace('T', ' ')) # what time is it?
+      output_file.write(line_to_write + "\n")
+      inc += 1

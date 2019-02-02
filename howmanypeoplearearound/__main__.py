@@ -11,6 +11,7 @@ import click
 
 from howmanypeoplearearound.oui import oui
 from howmanypeoplearearound.analysis import analyze_file
+from howmanypeoplearearound.analysis import parse_file
 from howmanypeoplearearound.colors import *
 
 # Import OSC #########
@@ -76,6 +77,8 @@ def fileToMacSet(path):
 @click.command()
 @click.option('-a', '--adapter', default='', help='adapter to use')
 @click.option('-z', '--analyze', default='', help='analyze file')
+@click.option('-p', '--parsefile', default='', help='parse file')
+@click.option('-f', '--output', default='tmp.txt', help='parse file output name')
 @click.option('-s', '--scantime', default='60', help='time in seconds to scan')
 @click.option('-o', '--out', default='', help='output cellphone data to file')
 @click.option('-v', '--verbose', help='verbose mode', is_flag=True)
@@ -88,9 +91,12 @@ def fileToMacSet(path):
 @click.option('--port', default=8001, help='port to use when serving analysis')
 @click.option('--sort', help='sort cellphone data by distance (rssi)', is_flag=True)
 @click.option('--targetmacs', help='read a file that contains target MAC addresses', default='')
-def main(adapter, scantime, verbose, number, nearby, jsonprint, out, allmacaddresses, nocorrection, loop, analyze, port, sort, targetmacs):
+def main(adapter, scantime, verbose, number, nearby, jsonprint, out, allmacaddresses, nocorrection, loop, analyze, port, parsefile, output, sort, targetmacs):
     if analyze != '':
         analyze_file(analyze, port)
+        return
+    if parsefile != '':
+        parse_file(parsefile, output)
         return
     if loop:
         while True:
